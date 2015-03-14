@@ -8,13 +8,13 @@
 # --
 
                     <li class="[% Data.Class | html %]">
-                        <form title="[% Translate("QuickOwnerChange ticket") | html %]" action="$Env{"CGIHandle"}" method="post">
+                        <form title="[% Translate("QuickOwnerChange ticket") | html %]" action="[% Env("CGIHandle") | html %]" method="post">
                             <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
                             <input type="hidden" name="TicketID" value="[% Data.TicketID | html %]"/>
                             <label for="QuickOwnerChange" class="InvisibleText">[% Translate("QuickOwnerChange") | html %]:</label>
                             [% Data.Select %]
                         </form>
-[% WRAPPER JSOnDocumentComplete %[
+[% WRAPPER JSOnDocumentComplete %]
 <script type="text/javascript">//<![CDATA[
     $('#QuickOwnerChange').bind('change', function (Event) {
         var URL = Core.Config.Get('Baselink');

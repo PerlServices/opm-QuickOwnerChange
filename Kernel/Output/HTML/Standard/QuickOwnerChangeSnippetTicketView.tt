@@ -7,7 +7,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-                    <li class="Bulk AlwaysPresent [% Data.Class | html %]>
+                    <li class="Bulk AlwaysPresent [% Data.Class | html %]">
                         <form title="[% Translate("QuickOwnerChange ticket") | html %] action="[% Env("CGIHandle") | html %] method="post" name="quickownerchange" id="quickownerchange">
                             <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
                             <label for="QuickOwnerChange" class="InvisibleText">[% Translate("QuickOwnerChange") | html %]:</label>
@@ -15,6 +15,8 @@
                         </form>
 [% WRAPPER JSOnDocumentComplete %]
 <script type="text/javascript">//<![CDATA[
+    $('#QuickOwnerChange').unbind('change');
+
     $('#QuickOwnerChange').bind('change', function (Event) {
         // retrieve body for quickownerchange
         var URL = Core.Config.Get('Baselink');
