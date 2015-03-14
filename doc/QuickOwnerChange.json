@@ -1,8 +1,8 @@
 {
     "name": "QuickOwnerChange",
-    "version": "3.3.1",
+    "version": "4.0.1",
     "framework": [
-        "3.3.x"
+        "4.0.x"
     ],
     "vendor": {
         "name":  "Perl-Services.de",
@@ -10,7 +10,7 @@
     },
     "license": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007",
     "description" : {
-        "en": "Notifications for ConfigurationItems",
-        "de": "Benachrichtigungen für ConfigItems"
+        "en": "Change ticket owners easily",
+        "de": "Ticketbesitzer leicht wechseln"
     }
 }
