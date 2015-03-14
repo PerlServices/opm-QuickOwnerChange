@@ -1,5 +1,5 @@
 # --
-# QuickOwnerChangeSnippet.dtl - provides HTML for QuickOwnerChangeSnippet.pm
+# QuickOwnerChangeSnippet.tt - provides HTML for QuickOwnerChangeSnippet.pm
 # Copyright (C) 2015 Perl-Services.de, http://www.perl-services.de 
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -7,14 +7,14 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-                    <li class="$QData{"Class"}">
-                        <form title="$Text{"QuickOwnerChange ticket"}" action="$Env{"CGIHandle"}" method="post">
+                    <li class="[% Data.Class | html %]">
+                        <form title="[% Translate("QuickOwnerChange ticket") | html %]" action="$Env{"CGIHandle"}" method="post">
                             <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
-                            <input type="hidden" name="TicketID" value="$QData{"TicketID"}"/>
-                            <label for="QuickOwnerChange" class="InvisibleText">$Text{"QuickOwnerChange"}:</label>
-                            $Data{"Select"}
+                            <input type="hidden" name="TicketID" value="[% Data.TicketID | html %]"/>
+                            <label for="QuickOwnerChange" class="InvisibleText">[% Translate("QuickOwnerChange") | html %]:</label>
+                            [% Data.Select %]
                         </form>
-<!-- dtl:js_on_document_complete -->
+[% WRAPPER JSOnDocumentComplete %[
 <script type="text/javascript">//<![CDATA[
     $('#QuickOwnerChange').bind('change', function (Event) {
         var URL = Core.Config.Get('Baselink');
@@ -27,5 +27,5 @@
         }
     });
 //]]></script>
-<!-- dtl:js_on_document_complete -->
+[% END %]
                     </li>

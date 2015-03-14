@@ -1,5 +1,5 @@
 # --
-# QuickOwnerChangeSnippetTicketView.dtl - provides HTML for QuickOwnerChangeSnippetTicketView.pm
+# QuickOwnerChangeSnippetTicketView.tt - provides HTML for QuickOwnerChangeSnippetTicketView.pm
 # Copyright (C) 2015 Perl-Services.de, http://www.perl-services.de 
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -7,13 +7,13 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-                    <li class="Bulk AlwaysPresent $QData{"Class"}">
-                        <form title="$Text{"QuickOwnerChange ticket"}" action="$Env{"CGIHandle"}" method="post" name="quickownerchange" id="quickownerchange">
+                    <li class="Bulk AlwaysPresent [% Data.Class | html %]>
+                        <form title="[% Translate("QuickOwnerChange ticket") | html %] action="[% Env("CGIHandle") | html %] method="post" name="quickownerchange" id="quickownerchange">
                             <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
-                            <label for="QuickOwnerChange" class="InvisibleText">$Text{"QuickOwnerChange"}:</label>
-                            $Data{"Select"}
+                            <label for="QuickOwnerChange" class="InvisibleText">[% Translate("QuickOwnerChange") | html %]:</label>
+                            [% Data.Select %]
                         </form>
-<!-- dtl:js_on_document_complete -->
+[% WRAPPER JSOnDocumentComplete %]
 <script type="text/javascript">//<![CDATA[
     $('#QuickOwnerChange').bind('change', function (Event) {
         // retrieve body for quickownerchange
@@ -51,5 +51,5 @@
         }
     });
 //]]></script>
-<!-- dtl:js_on_document_complete -->
+[% END %]
                     </li>

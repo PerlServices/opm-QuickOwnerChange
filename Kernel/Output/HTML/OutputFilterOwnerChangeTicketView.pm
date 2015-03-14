@@ -12,6 +12,12 @@ package Kernel::Output::HTML::OutputFilterOwnerChangeTicketView;
 use strict;
 use warnings;
 
+our @ObjectDependencies = qw(
+    Kernel::Config
+    Kernel::Output::HTML::Layout
+    Kernel::System::User
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,25 +25,22 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # get needed objects
-    for my $Object ( qw(MainObject ConfigObject LogObject LayoutObject ParamObject) ) {
-        $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
+
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
     return 1 if !$Templatename;
 
-    return 1 if !$Self->{TicketObject};
-
     if ( $Templatename  =~ m{AgentTicketOverview(?:Small|Medium|Preview)\z} ) {
-        my %User = $Self->{UserObject}->UserList(
+        my %User = $UserObject->UserList(
             Type    => 'Long',
         );
 
@@ -45,17 +48,17 @@ sub Run {
         
         unshift @Data, {
             Key => '', 
-            Value => ' - ' . ($Self->{ConfigObject}->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
+            Value => ' - ' . ($ConfigObject->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
         };
         
-        my $Select = $Self->{LayoutObject}->BuildSelection(
+        my $Select = $LayoutObject->BuildSelection(
             Data         => \@Data,
             Name         => 'QuickOwnerChange',
             Size         => 1,
             HTMLQuote    => 1,
         );
 
-        my $Snippet = $Self->{LayoutObject}->Output(
+        my $Snippet = $LayoutObject->Output(
             TemplateFile => 'QuickOwnerChangeSnippetTicketView',
             Data         => {
                 Select => $Select,

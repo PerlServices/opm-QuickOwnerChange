@@ -12,7 +12,12 @@ package Kernel::Modules::AgentTicketOwnerChangeBulk;
 use strict;
 use warnings;
 
-use Kernel::System::State;
+our @ObjectDependencies = qw(
+    Kernel::Config
+    Kernel::System::Web::Request
+    Kernel::Output::HTML::Layout
+    Kernel::System::Ticket
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -21,35 +26,29 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for my $Needed (
-        qw(ParamObject DBObject TicketObject LayoutObject LogObject QueueObject ConfigObject TimeObject)
-        )
-    {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my @TicketIDs = $Self->{ParamObject}->GetArray( Param => 'TicketID' );
-    my $ID        = $Self->{ParamObject}->GetParam( Param => 'QuickOwnerChange' );
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+    my @TicketIDs = $ParamObject->GetArray( Param => 'TicketID' );
+    my $ID        = $ParamObject->GetParam( Param => 'QuickOwnerChange' );
 
     # check needed stuff
     if ( !@TicketIDs ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => 'No TicketID is given!',
             Comment => 'Please contact the admin.',
         );
     }
 
     if ( !$ID ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => 'No OwnerID is given!',
             Comment => 'Please contact the admin.',
         );
@@ -61,7 +60,7 @@ sub Run {
     for my $TicketID ( @TicketIDs ) {
 
         # check permissions
-        my $Access = $Self->{TicketObject}->TicketPermission(
+        my $Access = $TicketObject->TicketPermission(
             Type     => 'owner',
             TicketID => $TicketID,
             UserID   => $Self->{UserID}
@@ -73,7 +72,7 @@ sub Run {
             next TICKETID;
         }
 
-        $Self->{TicketObject}->TicketOwnerSet(
+        $TicketObject->TicketOwnerSet(
             TicketID  => $TicketID,
             NewUserID => $ID,
             UserID    => $Self->{UserID},
@@ -85,13 +84,13 @@ sub Run {
         my $LastView = $Self->{LastScreenOverview} || $Self->{LastScreenView} || 'Action=AgentDashboard';
         my $OP       = @TicketIDs == 1 ? 'Action=AgentTicketZoom&TicketID=' . $TicketIDs[0] :  $LastView;
 
-        return $Self->{LayoutObject}->Redirect(
+        return $LayoutObject->Redirect(
             OP => $OP,
         );
 
     }
     else {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => 'No Access to these Tickets (IDs: ' . join( ", ", @NoAccess ) . ')',
             Comment => 'Please contact the admin.',
         );

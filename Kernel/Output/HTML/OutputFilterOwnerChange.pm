@@ -12,10 +12,13 @@ package Kernel::Output::HTML::OutputFilterOwnerChange;
 use strict;
 use warnings;
 
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Ticket;
-use Kernel::System::User;
+our @ObjectDependencies = qw(
+    Kernel::Config
+    Kernel::System::Web::Request
+    Kernel::Output::HTML::Layout
+    Kernel::System::Ticket
+
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,58 +27,59 @@ sub new {
     my $Self = { %Param };
     bless( $Self, $Type );
 
-    # get needed objects
-    for my $Object ( qw(MainObject ConfigObject LogObject LayoutObject ParamObject) ) {
-        $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $QueueObject  = $Kernel::OM->Get('Kernel::System::Queue');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
+    my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
+
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
     return 1 if !$Templatename;
 
-    return 1 if !$Self->{TicketObject};
-
     if ( $Templatename  =~ m{AgentTicketZoom\z} ) {
-        my ($TicketID) = $Self->{ParamObject}->GetParam( Param => 'TicketID' );
+        my ($TicketID) = $ParamObject->GetParam( Param => 'TicketID' );
 
-        my %Ticket = $Self->{TicketObject}->TicketGet(
+        my %Ticket = $TicketObject->TicketGet(
             TicketID => $TicketID,
             UserID   => $Self->{UserID},
         );
 
-        my $GroupID = $Self->{QueueObject}->GetQueueGroupID(
+        my $GroupID = $QueueObject->GetQueueGroupID(
             QueueID => $Ticket{QueueID},
         );
 
-        my $Type = $Self->{ConfigObject}->Get('QuickOwnerChange::Permissions') || 'rw';
-        my %User = $Self->{GroupObject}->GroupMemberList(
+        my $Type = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
+        my %User = $GroupObject->GroupMemberList(
             GroupID => $GroupID,
             Type    => $Type,
             Result  => 'HASH',
         );
 
-        $User{$_} = $Self->{UserObject}->UserName( UserID => $_ ) for keys %User;
+        $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
 
         my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
         
         unshift @Data, {
             Key => '', 
-            Value => ' - ' . ($Self->{ConfigObject}->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
+            Value => ' - ' . ($ConfigObject->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
         };
 
-        my $Select = $Self->{LayoutObject}->BuildSelection(
+        my $Select = $LayoutObject->BuildSelection(
             Name       => 'QuickOwnerChange',
             Data       => \@Data,
             SelectedID => '',
         );
         
-        my $Snippet = $Self->{LayoutObject}->Output(
+        my $Snippet = $LayoutObject->Output(
             TemplateFile => 'QuickOwnerChangeSnippet',
             Data         => {
                 TicketID => $TicketID,
@@ -84,7 +88,7 @@ sub Run {
         ); 
 
         #scan html output and generate new html input
-        my $LinkType = $Self->{ConfigObject}->Get('Ticket::Frontend::MoveType');
+        my $LinkType = $ConfigObject->Get('Ticket::Frontend::MoveType');
         if ( $LinkType eq 'form' ) {
             ${ $Param{Data} } =~ s{(<select name="DestQueueID".*?</li>)}{$1 $Snippet}mgs;
         }
