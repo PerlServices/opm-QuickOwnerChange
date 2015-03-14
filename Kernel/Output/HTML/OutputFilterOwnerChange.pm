@@ -17,7 +17,9 @@ our @ObjectDependencies = qw(
     Kernel::System::Web::Request
     Kernel::Output::HTML::Layout
     Kernel::System::Ticket
-
+    Kernel::System::Group
+    Kernel::System::User
+    Kernel::System::Queue
 );
 
 sub new {
