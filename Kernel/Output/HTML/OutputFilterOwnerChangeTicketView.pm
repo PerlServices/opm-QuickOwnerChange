@@ -1,8 +1,6 @@
 # --
 # Kernel/Output/HTML/OutputFilterOwnerChangeTicketView.pm
-# Copyright (C) 2011 Perl-Services.de, http://www.perl-services.de/
-# --
-# $Id: OutputFilterOwnerChangeTicketView.pm,v 1.1 2011/04/19 10:21:42 rb Exp $
+# Copyright (C) 2015 Perl-Services.de, http://www.perl-services.de/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -14,21 +12,15 @@ package Kernel::Output::HTML::OutputFilterOwnerChangeTicketView;
 use strict;
 use warnings;
 
-use Kernel::System::Encode;
-use Kernel::System::Time;
-
 sub new {
     my ( $Type, %Param ) = @_;
 
     # allocate new hash for object
-    my $Self = {};
+    my $Self = {%Param};
     bless( $Self, $Type );
 
     # get needed objects
-    for my $Object (
-        qw(MainObject ConfigObject LogObject LayoutObject ParamObject)
-        )
-    {
+    for my $Object ( qw(MainObject ConfigObject LogObject LayoutObject ParamObject) ) {
         $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
     }
 
@@ -42,9 +34,14 @@ sub Run {
     my $Templatename = $Param{TemplateFile} || '';
     return 1 if !$Templatename;
 
+    return 1 if !$Self->{TicketObject};
+
     if ( $Templatename  =~ m{AgentTicketOverview(?:Small|Medium|Preview)\z} ) {
-        my @Indexes = sort{ $List{$a} cmp $List{$b} }keys %List;
-        my @Data    = map{ { Key => $_, Value => $List{$_} } }@Indexes;
+        my %User = $Self->{UserObject}->UserList(
+            Type    => 'Long',
+        );
+
+        my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
         
         unshift @Data, {
             Key => '', 
@@ -61,8 +58,7 @@ sub Run {
         my $Snippet = $Self->{LayoutObject}->Output(
             TemplateFile => 'QuickOwnerChangeSnippetTicketView',
             Data         => {
-                QuickOwnerChangeSelect => $Select,
-                FormID                 => $FormID,
+                Select => $Select,
             },
         ); 
 

@@ -9,11 +9,9 @@
 
                     <li class="Bulk AlwaysPresent $QData{"Class"}">
                         <form title="$Text{"QuickOwnerChange ticket"}" action="$Env{"CGIHandle"}" method="post" name="quickownerchange" id="quickownerchange">
-                            <input type="hidden" name="Action" value="AgentOwnerChangeBulk"/>
-                            <input type="hidden" name="Subject" value="$Text{"Close"}"/>
-                            <input type="hidden" name="FormID" value="$QData{"FormID"}" />
+                            <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
                             <label for="QuickOwnerChange" class="InvisibleText">$Text{"QuickOwnerChange"}:</label>
-                            $Data{"QuickOwnerChangeSelect"}
+                            $Data{"Select"}
                         </form>
 <!-- dtl:js_on_document_complete -->
 <script type="text/javascript">//<![CDATA[

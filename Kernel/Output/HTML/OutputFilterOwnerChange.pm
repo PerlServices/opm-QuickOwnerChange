@@ -1,8 +1,6 @@
 # --
 # Kernel/Output/HTML/OutputFilterOwnerChange.pm
-# Copyright (C) 2011 Perl-Services.de, http://www.perl-services.de/
-# --
-# $Id: OutputFilterOwnerChange.pm,v 1.1 2011/04/19 10:21:42 rb Exp $
+# Copyright (C) 2015 Perl-Services.de, http://www.perl-services.de/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -23,22 +21,13 @@ sub new {
     my ( $Type, %Param ) = @_;
 
     # allocate new hash for object
-    my $Self = {};
+    my $Self = { %Param };
     bless( $Self, $Type );
 
     # get needed objects
-    for my $Object (
-        qw(MainObject ConfigObject LogObject LayoutObject ParamObject)
-        )
-    {
+    for my $Object ( qw(MainObject ConfigObject LogObject LayoutObject ParamObject) ) {
         $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
     }
-
-    $Self->{EncodeObject} = $Param{EncodeObject} || Kernel::System::Encode->new( %{$Self} );
-    $Self->{TimeObject}   = $Param{TimeObject}   || Kernel::System::Time->new( %{$Self} );
-    $Self->{TicketObject} = $Param{TicketObject} || Kernel::System::Ticket->new( %{$Self} );
-    $Self->{UserObject}   = $Param{UserObject}   || Kernel::System::User->new( %{$Self} );
-
 
     return $Self;
 }
@@ -49,6 +38,8 @@ sub Run {
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
     return 1 if !$Templatename;
+
+    return 1 if !$Self->{TicketObject};
 
     if ( $Templatename  =~ m{AgentTicketZoom\z} ) {
         my ($TicketID) = $Self->{ParamObject}->GetParam( Param => 'TicketID' );
@@ -69,19 +60,26 @@ sub Run {
             Result  => 'HASH',
         );
 
-        my @Data = map{ { Key => $_, Value => $User{$_} } }keys %User;
+        $User{$_} = $Self->{UserObject}->UserName( UserID => $_ ) for keys %User;
+
+        my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
         
         unshift @Data, {
             Key => '', 
-            Value => ' - ' . ($Self->{ConfigObject}->Get( 'QuickOwnerChange###NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
+            Value => ' - ' . ($Self->{ConfigObject}->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
         };
+
+        my $Select = $Self->{LayoutObject}->BuildSelection(
+            Name       => 'QuickOwnerChange',
+            Data       => \@Data,
+            SelectedID => '',
+        );
         
         my $Snippet = $Self->{LayoutObject}->Output(
             TemplateFile => 'QuickOwnerChangeSnippet',
             Data         => {
-                TicketID               => $TicketID,
-                QuickOwnerChangeSelect => $Select,
-                FormID                 => $FormID,
+                TicketID => $TicketID,
+                Select   => $Select,
             },
         ); 
 

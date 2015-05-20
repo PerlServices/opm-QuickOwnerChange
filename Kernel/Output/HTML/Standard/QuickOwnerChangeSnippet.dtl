@@ -1,5 +1,5 @@
 # --
-# QuickOwnerCheckSnippet.dtl - provides HTML for QuickOwnerCheckSnippet.pm
+# QuickOwnerChangeSnippet.dtl - provides HTML for QuickOwnerChangeSnippet.pm
 # Copyright (C) 2015 Perl-Services.de, http://www.perl-services.de 
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -8,16 +8,15 @@
 # --
 
                     <li class="$QData{"Class"}">
-                        <form title="$Text{"QuickOwnerCheck ticket"}" action="$Env{"CGIHandle"}" method="post">
-                            <input type="hidden" name="Action" value="AgentOwnerChangeBulk"/>
+                        <form title="$Text{"QuickOwnerChange ticket"}" action="$Env{"CGIHandle"}" method="post">
+                            <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
                             <input type="hidden" name="TicketID" value="$QData{"TicketID"}"/>
-                            <input type="hidden" name="FormID" value="$QData{"FormID"}" />
-                            <label for="QuickOwnerCheck" class="InvisibleText">$Text{"QuickOwnerCheck"}:</label>
-                            $Data{"QuickOwnerCheckSelect"}
+                            <label for="QuickOwnerChange" class="InvisibleText">$Text{"QuickOwnerChange"}:</label>
+                            $Data{"Select"}
                         </form>
 <!-- dtl:js_on_document_complete -->
 <script type="text/javascript">//<![CDATA[
-    $('#QuickOwnerCheck').bind('change', function (Event) {
+    $('#QuickOwnerChange').bind('change', function (Event) {
         var URL = Core.Config.Get('Baselink');
         var TID = $(this).val();
 
