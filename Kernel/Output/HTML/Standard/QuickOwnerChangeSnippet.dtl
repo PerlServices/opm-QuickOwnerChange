@@ -1,0 +1,32 @@
+# --
+# QuickOwnerCheckSnippet.dtl - provides HTML for QuickOwnerCheckSnippet.pm
+# Copyright (C) 2015 Perl-Services.de, http://www.perl-services.de 
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+                    <li class="$QData{"Class"}">
+                        <form title="$Text{"QuickOwnerCheck ticket"}" action="$Env{"CGIHandle"}" method="post">
+                            <input type="hidden" name="Action" value="AgentOwnerChangeBulk"/>
+                            <input type="hidden" name="TicketID" value="$QData{"TicketID"}"/>
+                            <input type="hidden" name="FormID" value="$QData{"FormID"}" />
+                            <label for="QuickOwnerCheck" class="InvisibleText">$Text{"QuickOwnerCheck"}:</label>
+                            $Data{"QuickOwnerCheckSelect"}
+                        </form>
+<!-- dtl:js_on_document_complete -->
+<script type="text/javascript">//<![CDATA[
+    $('#QuickOwnerCheck').bind('change', function (Event) {
+        var URL = Core.Config.Get('Baselink');
+        var TID = $(this).val();
+
+        var thisObject = $(this);
+
+        if ( TID ) {
+            thisObject.closest('form').submit();
+        }
+    });
+//]]></script>
+<!-- dtl:js_on_document_complete -->
+                    </li>
