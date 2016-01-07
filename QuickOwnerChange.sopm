@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.28) -->
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.29) -->
     <Name>QuickOwnerChange</Name>
-    <Version>4.0.1</Version>
-    <Framework>4.0.x</Framework>
+    <Version>5.0.1</Version>
+    <Framework>5.0.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
     <Description Lang="de">Ticketbesitzer leicht wechseln</Description>
@@ -12,10 +12,10 @@
     <Filelist>
         <File Permission="644" Location="Kernel/Config/Files/QuickOwnerChange.xml" />
         <File Permission="644" Location="Kernel/Modules/AgentTicketOwnerChangeBulk.pm" />
-        <File Permission="644" Location="Kernel/Output/HTML/OutputFilterOwnerChange.pm" />
-        <File Permission="644" Location="Kernel/Output/HTML/OutputFilterOwnerChangeTicketView.pm" />
-        <File Permission="644" Location="Kernel/Output/HTML/Standard/QuickOwnerChangeSnippet.tt" />
-        <File Permission="644" Location="Kernel/Output/HTML/Standard/QuickOwnerChangeSnippetTicketView.tt" />
+        <File Permission="644" Location="Kernel/Output/HTML/FilterElementPost/OwnerChange.pm" />
+        <File Permission="644" Location="Kernel/Output/HTML/FilterElementPost/OwnerChangeTicketView.pm" />
+        <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/QuickOwnerChangeSnippet.tt" />
+        <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/QuickOwnerChangeSnippetTicketView.tt" />
         <File Permission="644" Location="doc/QuickOwnerChange.json" />
         <File Permission="644" Location="doc/en/QuickOwnerChange.pod" />
     </Filelist>
