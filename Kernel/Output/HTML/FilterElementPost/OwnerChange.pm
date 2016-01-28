@@ -59,6 +59,17 @@ sub Run {
             QueueID => $Ticket{QueueID},
         );
 
+        my $AgentGroup = $ConfigObject->Get('QuickOwnerChange::OwnerGroup');
+        if ( $AgentGroup ) {
+            $GroupID = $GroupObject->GroupLookup( Group => $AgentGroup );
+        }
+
+        my $QueueAgentGroup = $ConfigObject->Get('QuickOwnerChange::QueueGroups') || {};
+        if ( $QueueAgentGroup && $QueueAgentGroup->{ $Ticket{Queue} } ) {
+            my $GroupName = $QueueAgentGroup->{ $Ticket{Queue} };
+            $GroupID = $GroupObject->GroupLookup( Group => $GroupName );
+        }
+
         my $Type = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
         my %User = $GroupObject->GroupMemberList(
             GroupID => $GroupID,
