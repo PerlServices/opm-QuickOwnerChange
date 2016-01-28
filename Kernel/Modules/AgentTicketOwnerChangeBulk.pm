@@ -77,6 +77,14 @@ sub Run {
             NewUserID => $ID,
             UserID    => $Self->{UserID},
         );
+
+        if ( $ConfigObject->Get('QuickOwnerChange::SetResponsible') ) {
+            $TicketObject->TicketResponsibleSet(
+                TicketID  => $TicketID,
+                NewUserID => $ID,
+                UserID    => $Self->{UserID},
+            );
+        }
     }
 
     # redirect parent window to last screen overview on closed tickets

@@ -34,6 +34,7 @@ sub Run {
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
     my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
+    my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
 
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
@@ -43,6 +44,20 @@ sub Run {
         my %User = $UserObject->UserList(
             Type    => 'Long',
         );
+
+        my $AgentGroup = $ConfigObject->Get('QuickOwnerChange::OwnerGroup');
+        if ( $AgentGroup ) {
+            my $GroupID = $GroupObject->GroupLookup( Group => $AgentGroup );
+            my $Type    = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
+
+            %User = $GroupObject->GroupMemberList(
+                GroupID => $GroupID,
+                Type    => $Type,
+                Result  => 'HASH',
+            );
+
+            $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
+        }
 
         my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
         
