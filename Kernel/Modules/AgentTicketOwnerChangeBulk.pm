@@ -35,6 +35,7 @@ sub Run {
     my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     my @TicketIDs = $ParamObject->GetArray( Param => 'TicketID' );
     my $ID        = $ParamObject->GetParam( Param => 'QuickOwnerChange' );
