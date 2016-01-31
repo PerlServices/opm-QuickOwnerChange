@@ -16,6 +16,9 @@ our @ObjectDependencies = qw(
     Kernel::Config
     Kernel::Output::HTML::Layout
     Kernel::System::User
+    Kernel::System::Group
+    Kernel::System::Queue
+    Kernel::System::Web::Request
 );
 
 sub new {
@@ -35,56 +38,79 @@ sub Run {
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
     my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
     my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $QueueObject  = $Kernel::OM->Get('Kernel::System::Queue');
 
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
     return 1 if !$Templatename;
+    return 1 if !$Param{Templates}->{$Templatename};
 
-    if ( $Templatename  =~ m{AgentTicketOverview(?:Small|Medium|Preview)\z} ) {
-        my %User = $UserObject->UserList(
-            Type    => 'Long',
+    my %User = $UserObject->UserList(
+        Type    => 'Long',
+    );
+
+    my $Type       = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
+    my $AgentGroup = $ConfigObject->Get('QuickOwnerChange::OwnerGroup');
+
+    if ( $AgentGroup ) {
+        my $GroupID = $GroupObject->GroupLookup( Group => $AgentGroup );
+
+        %User = $GroupObject->GroupMemberList(
+            GroupID => $GroupID,
+            Type    => $Type,
+            Result  => 'HASH',
         );
 
-        my $AgentGroup = $ConfigObject->Get('QuickOwnerChange::OwnerGroup');
-        if ( $AgentGroup ) {
-            my $GroupID = $GroupObject->GroupLookup( Group => $AgentGroup );
-            my $Type    = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
-
-            %User = $GroupObject->GroupMemberList(
-                GroupID => $GroupID,
-                Type    => $Type,
-                Result  => 'HASH',
-            );
-
-            $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
-        }
-
-        my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
-        
-        unshift @Data, {
-            Key => '', 
-            Value => ' - ' . ($ConfigObject->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
-        };
-        
-        my $Select = $LayoutObject->BuildSelection(
-            Data         => \@Data,
-            Name         => 'QuickOwnerChange',
-            Size         => 1,
-            HTMLQuote    => 1,
-        );
-
-        my $Snippet = $LayoutObject->Output(
-            TemplateFile => 'QuickOwnerChangeSnippetTicketView',
-            Data         => {
-                Select => $Select,
-            },
-        ); 
-
-        #scan html output and generate new html input
-        ${ $Param{Data} } =~ s{(<ul \s+ class="Actions"> \s* <li .*? /li>)}{$1 $Snippet}xmgs;
+        $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
     }
 
-    return ${ $Param{Data} };
+    my $QueueID         = $ParamObject->GetParam( Param => 'QueueID' );
+    my $QueueAgentGroup = $ConfigObject->Get('QuickOwnerChange::QueueGroups') || {};
+
+    my $QueueName = '';
+    if ( $QueueID ) {
+        $QueueName = $QueueObject->QueueLookup( QueueID => $QueueID );
+    }
+
+    if ( $QueueAgentGroup && $QueueName && $QueueAgentGroup->{ $QueueName } ) {
+        my $GroupName = $QueueAgentGroup->{ $QueueName };
+        my $GroupID   = $GroupObject->GroupLookup( Group => $GroupName );
+
+        %User = $GroupObject->GroupMemberList(
+            GroupID => $GroupID,
+            Type    => $Type,
+            Result  => 'HASH',
+        );
+
+        $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
+    }
+
+    my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
+    
+    unshift @Data, {
+        Key => '', 
+        Value => ' - ' . ($ConfigObject->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
+    };
+    
+    my $Select = $LayoutObject->BuildSelection(
+        Data         => \@Data,
+        Name         => 'QuickOwnerChange',
+        Size         => 1,
+        HTMLQuote    => 1,
+    );
+
+    my $Snippet = $LayoutObject->Output(
+        TemplateFile => 'QuickOwnerChangeSnippetTicketView',
+        Data         => {
+            Select => $Select,
+        },
+    ); 
+
+    #scan html output and generate new html input
+    ${ $Param{Data} } =~ s{(<ul \s+ class="Actions"> \s* <li .*? /li>)}{$1 $Snippet}xmgs;
+
+    return 1;
 }
 
 1;
