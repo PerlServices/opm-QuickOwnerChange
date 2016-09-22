@@ -78,6 +78,22 @@ sub Run {
             NewUserID => $ID,
             UserID    => $Self->{UserID},
         );
+        
+        if ( $ConfigObject->Get('QuickOwnerChange::SetLock') ) {
+	    if ($ID == 1 ) {
+	      $TicketObject->TicketLockSet(
+		  Lock     => 'unlock',
+		  TicketID  => $TicketID,
+		  UserID    => $Self->{UserID},
+	      );
+	    } else {
+	      $TicketObject->TicketLockSet(
+		  Lock     => 'lock',
+		  TicketID  => $TicketID,
+		  UserID    => $Self->{UserID},
+	      );
+	    }
+        }
 
         if ( $ConfigObject->Get('QuickOwnerChange::SetResponsible') ) {
             $TicketObject->TicketResponsibleSet(
