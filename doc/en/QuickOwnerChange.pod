@@ -9,6 +9,17 @@ makes it possible to change the owner with two clicks...
 
 =head1 ACKNOWLEDGMENT
 
+Thanks to all who contributed bugfixes or features:
+
+=over 4
+
+=item * thomtux
+
+Thomtux added the possibility to automatically lock the ticket for the new
+owner.
+
+=back
+
 Fortunately, some features were sponsored by companies:
 
 =over 4
