@@ -12,6 +12,8 @@ package Kernel::Modules::AgentTicketOwnerChangeBulk;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
+
 our @ObjectDependencies = qw(
     Kernel::Config
     Kernel::System::Web::Request
@@ -43,15 +45,15 @@ sub Run {
     # check needed stuff
     if ( !@TicketIDs ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'No TicketID is given!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('No TicketID is given!'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
     if ( !$ID ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'No OwnerID is given!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('No OwnerID is given!'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
@@ -116,8 +118,8 @@ sub Run {
     }
     else {
         return $LayoutObject->ErrorScreen(
-            Message => 'No Access to these Tickets (IDs: ' . join( ", ", @NoAccess ) . ')',
-            Comment => 'Please contact the admin.',
+            Message => $LayoutObject->{LanguageObject}->Translate( 'No access to these tickets (IDs: %s)', join( ", ", @NoAccess ) ),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 }
