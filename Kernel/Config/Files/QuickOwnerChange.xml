@@ -124,4 +124,14 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="QuickOwnerChange::ViewPermissionByGroup" Required="0" Valid="0">
+        <Description Translatable="1">If enabled, only agents of the given groups can see the dropdown.</Description>
+        <Group>QuickOwnerChange</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Array>
+                <Item>admin</Item>
+            </Array>
+        </Setting>
+    </ConfigItem>
 </otrs_config>

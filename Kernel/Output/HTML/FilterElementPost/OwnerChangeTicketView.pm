@@ -46,6 +46,12 @@ sub Run {
     return 1 if !$Templatename;
     return 1 if !$Param{Templates}->{$Templatename};
 
+    my @GroupPermissions = @{ $ConfigObject->Get('QuickOwnerChange::ViewPermissionByGroup') || [] };
+    if ( @GroupPermissions ) {
+        my $IsAllowed = grep{ $LayoutObject->{"UserIsGroup[$_]"} }@GroupPermissions;
+        return 1 if !$IsAllowed;
+    }
+
     my %User = $UserObject->UserList(
         Type    => 'Long',
     );

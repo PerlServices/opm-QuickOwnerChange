@@ -64,6 +64,12 @@ sub Run {
         return 1 if !$IsAllowed;
     }
 
+    my @GroupPermissions = @{ $ConfigObject->Get('QuickOwnerChange::ViewPermissionByGroup') || [] };
+    if ( @GroupPermissions ) {
+        my $IsAllowed = grep{ $LayoutObject->{"UserIsGroup[$_]"} }@GroupPermissions;
+        return 1 if !$IsAllowed;
+    }
+
     my $GroupID = $QueueObject->GetQueueGroupID(
         QueueID => $Ticket{QueueID},
     );
