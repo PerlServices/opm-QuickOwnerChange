@@ -114,4 +114,14 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="QuickOwnerChange::ViewPermission" Required="0" Valid="0">
+        <Description Translatable="1">If enabled, for the given queues only agents of the given group(s) can view the dropdown. If you want all members of the groups 'users' and 'admin' to see the dropdown in tickets that are in the queue 'Raw', you have to write 'users,admin' as the value.</Description>
+        <Group>QuickOwnerChange</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Raw">users,admin</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
 </otrs_config>

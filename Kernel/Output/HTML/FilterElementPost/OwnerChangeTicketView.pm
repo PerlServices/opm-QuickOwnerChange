@@ -91,7 +91,7 @@ sub Run {
     my $Label = $ConfigObject->Get('QuickOwnerChange::NoneLabel') || 'Quick Owner Change';
 
     unshift @Data, {
-        Key   => '',
+        Key   => '0',
         Value => ' - ' . $LayoutObject->{LanguageObject}->Translate( $Label )  . ' - ',
     };
     
