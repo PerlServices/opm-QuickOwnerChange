@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Config">
     <ConfigItem Name="Frontend::Module###AgentQuickOwnerChange" Required="0" Valid="1">
-        <Description Lang="en">Frontend module registration for the QuickOwnerChange agent interface.</Description>
-        <Description Lang="de">Frontendmodul-Registration für das QuickOwnerChange Agenten Interface.</Description>
+        <Description Translatable="1">Frontend module registration for the QuickOwnerChange agent interface.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>Frontend::Agent::ModuleRegistration</SubGroup>
         <Setting>
             <FrontendModuleReg>
-                <Description>QuickOwnerChange</Description>
+                <Description Translatable="1">Quick owner change.</Description>
                 <NavBarName></NavBarName>
-                <Title>QuickOwnerChange</Title>
+                <Title Translatable="1">Quick Owner Change</Title>
             </FrontendModuleReg>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::Module###AgentTicketOwnerChangeBulk" Required="0" Valid="1">
-        <Description Lang="en">Frontend module registration for the bulk QuickOwnerChange agent interface.</Description>
-        <Description Lang="de">Frontendmodul-Registration für das MassenQuickOwnerChange Agenten Interface.</Description>
+        <Description Translatable="1">Frontend module registration for the bulk QuickOwnerChange agent interface.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>Frontend::Agent::ModuleRegistration</SubGroup>
         <Setting>
             <FrontendModuleReg>
-                <Description>Bulk QuickOwnerChange</Description>
+                <Description Translatable="1">Bulk quick owner change.</Description>
                 <NavBarName></NavBarName>
-                <Title>Bulk QuickOwnerChange</Title>
+                <Title Translatable="1">Bulk Quick Owner Change</Title>
             </FrontendModuleReg>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::Output::FilterElementPost###OutputFilterOwnerChange" Required="0" Valid="1">
-        <Description Lang="en">Modul to show OuputfilterOwnerChange.</Description>
-        <Description Lang="de">Modul zum Anzeigen von OuputfilterOwnerChange.</Description>
+        <Description Translatable="1">Module to show OuputfilterOwnerChange.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>OutputFilterOwnerChange</SubGroup>
         <Setting>
@@ -44,8 +41,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::Output::FilterElementPost###OutputFilterOwnerChangeTicketView" Required="0" Valid="1">
-        <Description Lang="en">Modul to show OuputfilterOwnerChange in ticket overviews.</Description>
-        <Description Lang="de">Modul zum Anzeigen von OuputfilterOwnerChange in Ticketübersichten.</Description>
+        <Description Translatable="1">Module to show OuputfilterOwnerChange in ticket overviews.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>OutputFilterOwnerChange</SubGroup>
         <Setting>
@@ -62,15 +58,6 @@
             </Hash>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="QuickOwnerChange::NoneLabel" Required="0" Valid="1">
-        <Description Lang="en">Label for the NULL option in dropdown.</Description>
-        <Description Lang="de">Text für die Leer-Option im Dropdown.</Description>
-        <Group>QuickOwnerChange</Group>
-        <SubGroup>Core</SubGroup>
-        <Setting>
-            <String Regex="">QuickOwnerChange</String>
-        </Setting>
-    </ConfigItem>
     <ConfigItem Name="QuickOwnerChange::Permissions" Required="0" Valid="1">
         <Description Translatable="1">Minimum permissions for the agent on the queue of the ticket to be listed as a possible owner.</Description>
         <Group>QuickOwnerChange</Group>
@@ -80,29 +67,29 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="QuickOwnerChange::SetLock" Required="0" Valid="1">
-        <Description Translatable="1">If enabled, the ticket will be locked after change</Description>
+        <Description Translatable="1">If enabled, the ticket will be locked after change.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                <Item Key="0">No</Item>
-                <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="QuickOwnerChange::SetResponsible" Required="0" Valid="1">
-        <Description Translatable="1">If enabled, the responsible is set to the selected owner</Description>
+        <Description Translatable="1">If enabled, the responsible is set to the selected owner.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                <Item Key="0">No</Item>
-                <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="QuickOwnerChange::OwnerGroup" Required="0" Valid="0">
-        <Description Translatable="1">If enabled, the possible owners have to be a member of the defined group</Description>
+        <Description Translatable="1">If enabled, the possible owners have to be a member of the defined group.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
@@ -110,7 +97,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="QuickOwnerChange::QueueGroups" Required="0" Valid="0">
-        <Description Translatable="1">If enabled, the possible owners are defined by the queue the tickets is assigned to and the group</Description>
+        <Description Translatable="1">If enabled, the possible owners are defined by the queue the tickets is assigned to and the group.</Description>
         <Group>QuickOwnerChange</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
