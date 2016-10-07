@@ -81,9 +81,11 @@ sub Run {
 
         my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
         
+        my $Label = $ConfigObject->Get('QuickOwnerChange::NoneLabel') || 'Quick Owner Change';
+
         unshift @Data, {
-            Key => 0, 
-            Value => ' - ' . $LayoutObject->{LanguageObject}->Translate( 'Quick Owner Change' ) . ' - ',
+            Key   => '',
+            Value => ' - ' . $LayoutObject->{LanguageObject}->Translate( $Label ) . ' - ',
         };
 
         my $Select = $LayoutObject->BuildSelection(

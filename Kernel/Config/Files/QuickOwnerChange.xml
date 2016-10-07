@@ -58,6 +58,14 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="QuickOwnerChange::NoneLabel" Required="0" Valid="1">
+        <Description Translatable="1">Label for the NULL option in dropdown.</Description>
+        <Group>QuickOwnerChange</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <String Regex="">Quick Owner Change</String>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="QuickOwnerChange::Permissions" Required="0" Valid="1">
         <Description Translatable="1">Minimum permissions for the agent on the queue of the ticket to be listed as a possible owner.</Description>
         <Group>QuickOwnerChange</Group>
