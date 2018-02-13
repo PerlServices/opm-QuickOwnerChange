@@ -1,6 +1,5 @@
 # --
-# Kernel/Modules/AgentTicketOwnerChangeBulk.pm - bulk closing of tickets
-# Copyright (C) 2015 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2015 - 2018 Perl-Services.de, http://perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

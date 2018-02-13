@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.35) -->
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.4) -->
     <Name>QuickOwnerChange</Name>
-    <Version>5.0.8</Version>
-    <Framework>5.0.x</Framework>
+    <Version>6.0.1</Version>
+    <Framework>6.0.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
     <Description Lang="de">Ticketbesitzer leicht wechseln.</Description>
@@ -11,7 +11,7 @@
     <Description Lang="hu">Jegytulajdonosok egyszerű megváltoztatása.</Description>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <Filelist>
-        <File Permission="644" Location="Kernel/Config/Files/QuickOwnerChange.xml" />
+        <File Permission="644" Location="Kernel/Config/Files/XML/QuickOwnerChange.xml" />
         <File Permission="644" Location="Kernel/Language/de_QuickOwnerChange.pm" />
         <File Permission="644" Location="Kernel/Language/hu_QuickOwnerChange.pm" />
         <File Permission="644" Location="Kernel/Modules/AgentTicketOwnerChangeBulk.pm" />
