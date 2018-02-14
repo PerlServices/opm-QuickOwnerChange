@@ -56,17 +56,24 @@ sub Run {
         UserID   => $Self->{UserID},
     );
 
+    my %UserGroups = $GroupObject->PermissionUserGet(
+        UserID => $LayoutObject->{UserID},
+        Type   => 'rw',
+    );
+
+    my %GroupNames = reverse %UserGroups;
+
     my %ViewPermissions = %{ $ConfigObject->Get('QuickOwnerChange::ViewPermission') || {} };
     if ( $ViewPermissions{ $Ticket{Queue} } ) {
         my (@Groups) = split /\s*,\s*/, $ViewPermissions{ $Ticket{Queue} };
 
-        my $IsAllowed = grep{ $LayoutObject->{"UserIsGroup[$_]"} }@Groups;
+        my $IsAllowed = grep{ $GroupNames{$_} }@Groups;
         return 1 if !$IsAllowed;
     }
 
     my @GroupPermissions = @{ $ConfigObject->Get('QuickOwnerChange::ViewPermissionByGroup') || [] };
     if ( @GroupPermissions ) {
-        my $IsAllowed = grep{ $LayoutObject->{"UserIsGroup[$_]"} }@GroupPermissions;
+        my $IsAllowed = grep{ $GroupNames{$_} }@GroupPermissions;
         return 1 if !$IsAllowed;
     }
 
