@@ -2,7 +2,7 @@
 <otrs_package version="1.0">
     <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.4) -->
     <Name>QuickOwnerChange</Name>
-    <Version>6.0.1</Version>
+    <Version>6.0.2</Version>
     <Framework>6.0.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
@@ -15,6 +15,7 @@
         <File Permission="644" Location="Kernel/Language/de_QuickOwnerChange.pm" />
         <File Permission="644" Location="Kernel/Language/hu_QuickOwnerChange.pm" />
         <File Permission="644" Location="Kernel/Modules/AgentTicketOwnerChangeBulk.pm" />
+        <File Permission="644" Location="Kernel/Output/HTML/FilterContent/OwnerChangeTicketViewJS.pm" />
         <File Permission="644" Location="Kernel/Output/HTML/FilterElementPost/OwnerChange.pm" />
         <File Permission="644" Location="Kernel/Output/HTML/FilterElementPost/OwnerChangeTicketView.pm" />
         <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/QuickOwnerChangeSnippet.tt" />
