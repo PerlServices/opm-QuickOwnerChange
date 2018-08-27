@@ -177,4 +177,11 @@
             </Array>
         </Value>
     </Setting>
+    <Setting Name="QuickOwnerChange::UseQueueGroup" Required="0" Valid="1">
+        <Description Translatable="1">Use group setting of queue to define the list of available agents.</Description>
+        <Navigation>OPAR::QuickOwnerChange::Core</Navigation>
+        <Value>
+            <Item ValueType="Checkbox">0</Item>
+        </Value>
+    </Setting>
 </otrs_config>

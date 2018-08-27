@@ -57,6 +57,7 @@ sub Run {
     }
 
     my @NoAccess;
+    my @NoAccessNewOwner;
 
     TICKETID:
     for my $TicketID ( @TicketIDs ) {
@@ -71,6 +72,19 @@ sub Run {
         # error screen, don't show ticket
         if ( !$Access ) {
             push @NoAccess, $TicketID;
+            next TICKETID;
+        }
+
+        # check permissions
+        my $AccessNewOwner = $TicketObject->TicketPermission(
+            Type     => 'rw',
+            TicketID => $TicketID,
+            UserID   => $ID,
+        );
+
+        # error screen, don't show ticket
+        if ( !$AccessNewOwner ) {
+            push @NoAccessNewOwner, $TicketID;
             next TICKETID;
         }
 
@@ -116,8 +130,16 @@ sub Run {
 
     }
     else {
+        my $Message = sprintf "%s<br />%s",
+            $LayoutObject->{LanguageObject}->Translate(
+                'No access to these tickets (IDs: %s)', join( ", ", @NoAccess )
+            ),
+            $LayoutObject->{LanguageObject}->Translate(
+                'No access for given new owner to these tickets (IDs: %s)', join( ", ", @NoAccessNewOwner )
+            );
+
         return $LayoutObject->ErrorScreen(
-            Message => $LayoutObject->{LanguageObject}->Translate( 'No access to these tickets (IDs: %s)', join( ", ", @NoAccess ) ),
+            Message => $Message,
             Comment => Translatable('Please contact the administrator.'),
         );
     }

@@ -80,10 +80,17 @@ sub Run {
 
     my $QueueID         = $ParamObject->GetParam( Param => 'QueueID' );
     my $QueueAgentGroup = $ConfigObject->Get('QuickOwnerChange::QueueGroups') || {};
+    my $UseQueueGroup   = $ConfigObject->Get('QuickOwnerChange::UseQueueGroup');
 
     my $QueueName = '';
     if ( $QueueID ) {
         $QueueName = $QueueObject->QueueLookup( QueueID => $QueueID );
+
+        if ( $UseQueueGroup ) {
+            my %Queue = $QueueObject->QueueGet( ID => $QueueID );
+
+            $QueueAgentGroup->{$QueueName} = $GroupObject->GroupLookup( GroupID => $Queue{GroupID} );
+        }
     }
 
     if ( $QueueAgentGroup && $QueueName && $QueueAgentGroup->{ $QueueName } ) {
