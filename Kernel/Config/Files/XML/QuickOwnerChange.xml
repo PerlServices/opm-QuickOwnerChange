@@ -184,4 +184,11 @@
             <Item ValueType="Checkbox">0</Item>
         </Value>
     </Setting>
+    <Setting Name="QuickOwnerChange::RedirectAction" Required="0" Valid="0">
+        <Description Translatable="1">Force redirect to the given Action.</Description>
+        <Navigation>OPAR::QuickOwnerChange::Core</Navigation>
+        <Value>
+            <Item ValueType="String" ValueRegex="">AgentDashboard</Item>
+        </Value>
+    </Setting>
 </otrs_config>

@@ -95,19 +95,20 @@ sub Run {
         );
         
         if ( $ConfigObject->Get('QuickOwnerChange::SetLock') ) {
-	    if ($ID == 1 ) {
-	      $TicketObject->TicketLockSet(
-		  Lock     => 'unlock',
-		  TicketID  => $TicketID,
-		  UserID    => $Self->{UserID},
-	      );
-	    } else {
-	      $TicketObject->TicketLockSet(
-		  Lock     => 'lock',
-		  TicketID  => $TicketID,
-		  UserID    => $Self->{UserID},
-	      );
-	    }
+            if ($ID == 1 ) {
+                $TicketObject->TicketLockSet(
+                    Lock     => 'unlock',
+                    TicketID  => $TicketID,
+                    UserID    => $Self->{UserID},
+                );
+            }
+            else {
+                $TicketObject->TicketLockSet(
+                    Lock     => 'lock',
+                    TicketID  => $TicketID,
+                    UserID    => $Self->{UserID},
+                );
+            }
         }
 
         if ( $ConfigObject->Get('QuickOwnerChange::SetResponsible') ) {
@@ -123,6 +124,11 @@ sub Run {
     if ( !@NoAccess ) {
         my $LastView = $Self->{LastScreenOverview} || $Self->{LastScreenView} || 'Action=AgentDashboard';
         my $OP       = @TicketIDs == 1 ? 'Action=AgentTicketZoom&TicketID=' . $TicketIDs[0] :  $LastView;
+
+        my $RedirectAction = $ConfigObject->Get('QuickOwnerChange::RedirectAction');
+        if ( $RedirectAction ) {
+            $OP = 'Action=' . $RedirectAction;
+        }
 
         return $LayoutObject->Redirect(
             OP => $OP,
