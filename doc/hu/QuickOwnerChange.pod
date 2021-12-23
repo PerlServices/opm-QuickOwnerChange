@@ -1,0 +1,40 @@
+=encoding utf-8
+
+=head1 NÉV
+
+QuickOwnerChange - a jegytulajdonos gyors megváltoztatása.
+
+=head1 LEÍRÁS
+
+Ezzel a kiegészítővel egy lenyíló menüt kap a jegynagyításban és a 
+jegyáttekintőben, amely lehetővé teszi a tulajdonos megváltoztatását kettő 
+kattintással.
+
+=head1 KÖSZÖNETNYILVÁNÍTÁS
+
+Szerencsére néhány funkciót támogattak a következő vállalatok:
+
+=over 4
+
+=item * HYDRO Systems
+
+A HYDRO Systems KG L<http://www.hydro.aero/> támogatta azt a funkciót, hogy 
+a felelőst is be lehessen állítani (ugyanarra az ügyintézőre, mint a 
+tulajdonost). Egy további funkciót is támogatott a HYDRO: meghatározhat egy 
+csoportot, hogy a lehetséges tulajdonost ennek a csoportnak a tagjaira 
+korlátozza. Ilyen csoportot minden egyes várólistához meghatározhat.
+
+=back
+
+=head1 SZERZŐ ÉS LICENC
+
+Ezt a csomagot Renée Bäcker E<lt>otrs@perl-services.deE<gt> készítette.
+
+Ez a modul az AGPL 3.0 szerint licencelt. Ha nem kapta meg ezt a fájlt, 
+akkor nézze meg a L<http://www.gnu.org/licenses/agpl.txt> oldalon.
+
+=head1 MAGYAR FORDÍTÁS
+
+A magyar fordítást az OTRS-megoldások csapata készítette.
+Copyright (C) 2016 Úr Balázs, L<http://otrs-megoldasok.hu>
+

@@ -1,8 +1,8 @@
 {
     "name": "QuickOwnerChange",
-    "version": "5.0.4",
+    "version": "6.0.4",
     "framework": [
-        "5.0.x"
+        "6.0.x"
     ],
     "vendor": {
         "name":  "Perl-Services.de",
@@ -10,7 +10,8 @@
     },
     "license": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007",
     "description" : {
-        "en": "Change ticket owners easily",
-        "de": "Ticketbesitzer leicht wechseln"
+        "en": "Change ticket owners easily.",
+        "de": "Ticketbesitzer leicht wechseln.",
+        "hu": "Jegytulajdonosok egyszerű megváltoztatása."
     }
 }

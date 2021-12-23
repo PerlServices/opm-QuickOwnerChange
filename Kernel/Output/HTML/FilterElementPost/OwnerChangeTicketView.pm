@@ -46,6 +46,19 @@ sub Run {
     return 1 if !$Templatename;
     return 1 if !$Param{Templates}->{$Templatename};
 
+    my %UserGroups = $GroupObject->PermissionUserGet(
+        UserID => $LayoutObject->{UserID},
+        Type   => 'rw',
+    );
+
+    my %GroupNames = reverse %UserGroups;
+
+    my @GroupPermissions = @{ $ConfigObject->Get('QuickOwnerChange::ViewPermissionByGroup') || [] };
+    if ( @GroupPermissions ) {
+        my $IsAllowed = grep{ $GroupNames{$_} }@GroupPermissions;
+        return 1 if !$IsAllowed;
+    }
+
     my %User = $UserObject->UserList(
         Type    => 'Long',
     );
@@ -67,10 +80,17 @@ sub Run {
 
     my $QueueID         = $ParamObject->GetParam( Param => 'QueueID' );
     my $QueueAgentGroup = $ConfigObject->Get('QuickOwnerChange::QueueGroups') || {};
+    my $UseQueueGroup   = $ConfigObject->Get('QuickOwnerChange::UseQueueGroup');
 
     my $QueueName = '';
     if ( $QueueID ) {
         $QueueName = $QueueObject->QueueLookup( QueueID => $QueueID );
+
+        if ( $UseQueueGroup ) {
+            my %Queue = $QueueObject->QueueGet( ID => $QueueID );
+
+            $QueueAgentGroup->{$QueueName} = $GroupObject->GroupLookup( GroupID => $Queue{GroupID} );
+        }
     }
 
     if ( $QueueAgentGroup && $QueueName && $QueueAgentGroup->{ $QueueName } ) {
@@ -88,16 +108,20 @@ sub Run {
 
     my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
     
+    my $Label = $ConfigObject->Get('QuickOwnerChange::NoneLabel') || 'Quick Owner Change';
+
     unshift @Data, {
-        Key => '', 
-        Value => ' - ' . ($ConfigObject->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
+        Key   => '0',
+        Value => ' - ' . $LayoutObject->{LanguageObject}->Translate( $Label )  . ' - ',
     };
     
     my $Select = $LayoutObject->BuildSelection(
-        Data         => \@Data,
-        Name         => 'QuickOwnerChange',
-        Size         => 1,
-        HTMLQuote    => 1,
+        Data       => \@Data,
+        Name       => 'QuickOwnerChange',
+        Size       => 1,
+        HTMLQuote  => 1,
+        SelectedID => 0,
+        Class      => 'QuickOwnerChangeSelect Modernize',
     );
 
     my $Snippet = $LayoutObject->Output(

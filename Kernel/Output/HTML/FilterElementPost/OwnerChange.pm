@@ -46,71 +46,94 @@ sub Run {
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
     return 1 if !$Templatename;
+    return 1 if !$Param{Templates}->{$Templatename};
 
-    if ( $Templatename  =~ m{AgentTicketZoom\z} ) {
-        my ($TicketID) = $ParamObject->GetParam( Param => 'TicketID' );
+    my ($TicketID) = $ParamObject->GetParam( Param => 'TicketID' );
+    return 1 if !$TicketID;
 
-        my %Ticket = $TicketObject->TicketGet(
-            TicketID => $TicketID,
-            UserID   => $Self->{UserID},
-        );
+    my %Ticket = $TicketObject->TicketGet(
+        TicketID => $TicketID,
+        UserID   => $Self->{UserID},
+    );
 
-        my $GroupID = $QueueObject->GetQueueGroupID(
-            QueueID => $Ticket{QueueID},
-        );
+    my %UserGroups = $GroupObject->PermissionUserGet(
+        UserID => $LayoutObject->{UserID},
+        Type   => 'rw',
+    );
 
-        my $AgentGroup = $ConfigObject->Get('QuickOwnerChange::OwnerGroup');
-        if ( $AgentGroup ) {
-            $GroupID = $GroupObject->GroupLookup( Group => $AgentGroup );
-        }
+    my %GroupNames = reverse %UserGroups;
 
-        my $QueueAgentGroup = $ConfigObject->Get('QuickOwnerChange::QueueGroups') || {};
-        if ( $QueueAgentGroup && $QueueAgentGroup->{ $Ticket{Queue} } ) {
-            my $GroupName = $QueueAgentGroup->{ $Ticket{Queue} };
-            $GroupID = $GroupObject->GroupLookup( Group => $GroupName );
-        }
+    my %ViewPermissions = %{ $ConfigObject->Get('QuickOwnerChange::ViewPermission') || {} };
+    if ( $ViewPermissions{ $Ticket{Queue} } ) {
+        my (@Groups) = split /\s*,\s*/, $ViewPermissions{ $Ticket{Queue} };
 
-        my $Type = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
-        my %User = $GroupObject->GroupMemberList(
-            GroupID => $GroupID,
-            Type    => $Type,
-            Result  => 'HASH',
-        );
-
-        $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
-
-        my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
-        
-        unshift @Data, {
-            Key => '', 
-            Value => ' - ' . ($ConfigObject->Get( 'QuickOwnerChange::NoneLabel' ) || 'QuickOwnerChange')  . ' - ',
-        };
-
-        my $Select = $LayoutObject->BuildSelection(
-            Name       => 'QuickOwnerChange',
-            Data       => \@Data,
-            SelectedID => '',
-        );
-        
-        my $Snippet = $LayoutObject->Output(
-            TemplateFile => 'QuickOwnerChangeSnippet',
-            Data         => {
-                TicketID => $TicketID,
-                Select   => $Select,
-            },
-        ); 
-
-        #scan html output and generate new html input
-        my $LinkType = $ConfigObject->Get('Ticket::Frontend::MoveType');
-        if ( $LinkType eq 'form' ) {
-            ${ $Param{Data} } =~ s{(<select name="DestQueueID".*?</li>)}{$1 $Snippet}mgs;
-        }
-        else {
-            ${ $Param{Data} } =~ s{(<a href=".*?Action=AgentTicketMove;TicketID=\d+;".*?</li>)}{$1 $Snippet}mgs;
-        }
+        my $IsAllowed = grep{ $GroupNames{$_} }@Groups;
+        return 1 if !$IsAllowed;
     }
 
-    return ${ $Param{Data} };
+    my @GroupPermissions = @{ $ConfigObject->Get('QuickOwnerChange::ViewPermissionByGroup') || [] };
+    if ( @GroupPermissions ) {
+        my $IsAllowed = grep{ $GroupNames{$_} }@GroupPermissions;
+        return 1 if !$IsAllowed;
+    }
+
+    my $GroupID = $QueueObject->GetQueueGroupID(
+        QueueID => $Ticket{QueueID},
+    );
+
+    my $AgentGroup = $ConfigObject->Get('QuickOwnerChange::OwnerGroup');
+    if ( $AgentGroup ) {
+        $GroupID = $GroupObject->GroupLookup( Group => $AgentGroup );
+    }
+
+    my $QueueAgentGroup = $ConfigObject->Get('QuickOwnerChange::QueueGroups') || {};
+    if ( $QueueAgentGroup && $QueueAgentGroup->{ $Ticket{Queue} } ) {
+        my $GroupName = $QueueAgentGroup->{ $Ticket{Queue} };
+        $GroupID = $GroupObject->GroupLookup( Group => $GroupName );
+    }
+
+    my $Type = $ConfigObject->Get('QuickOwnerChange::Permissions') || 'rw';
+    my %User = $GroupObject->GroupMemberList(
+        GroupID => $GroupID,
+        Type    => $Type,
+        Result  => 'HASH',
+    );
+
+    $User{$_} = $UserObject->UserName( UserID => $_ ) for keys %User;
+
+    my @Data = map{ { Key => $_, Value => $User{$_} } }sort{ $User{$a} cmp $User{$b} }keys %User;
+    
+    my $Label = $ConfigObject->Get('QuickOwnerChange::NoneLabel') || 'Quick Owner Change';
+
+    unshift @Data, {
+        Key   => '0',
+        Value => ' - ' . $LayoutObject->{LanguageObject}->Translate( $Label ) . ' - ',
+    };
+
+    my $Select = $LayoutObject->BuildSelection(
+        Name       => 'QuickOwnerChange',
+        Data       => \@Data,
+        Class      => 'Modernize',
+    );
+    
+    my $Snippet = $LayoutObject->Output(
+        TemplateFile => 'QuickOwnerChangeSnippet',
+        Data         => {
+            TicketID => $TicketID,
+            Select   => $Select,
+        },
+    ); 
+
+    #scan html output and generate new html input
+    my $LinkType = $ConfigObject->Get('Ticket::Frontend::MoveType');
+    if ( $LinkType eq 'form' ) {
+        ${ $Param{Data} } =~ s{(<select name="DestQueueID".*?</li>)}{$1 $Snippet}mgs;
+    }
+    else {
+        ${ $Param{Data} } =~ s{(<a href=".*?Action=AgentTicketMove;TicketID=\d+;".*?</li>)}{$1 $Snippet}mgs;
+    }
+
+    return 1;
 }
 
 1;
