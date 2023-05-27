@@ -1,5 +1,4 @@
 # --
-# QuickOwnerChangeSnippetTicketView.tt - provides HTML for QuickOwnerChangeSnippetTicketView.pm
 # Copyright (C) 2015 - 2023 Perl-Services.de, https://www.perl-services.de 
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -7,7 +6,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-                    <li class="Bulk AlwaysPresent [% Data.Class | html %]">
+                    <li class="Bulk AlwaysPresent [% Data.Class | html %]" style="flex-wrap: nowrap">
                         <form title="[% Translate("QuickOwnerChange ticket") | html %]" action="[% Env("CGIHandle") | html %]" method="post" name="quickownerchange" id="quickownerchange">
                             <input type="hidden" name="Action" value="AgentTicketOwnerChangeBulk"/>
                             <label for="QuickOwnerChange" class="InvisibleText">[% Translate("QuickOwnerChange") | html %]:</label>
